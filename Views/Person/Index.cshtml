@@ -41,7 +41,7 @@
                 @Html.DisplayFor(modelItem => item.Country)
             </td>
             <td>
-                <a asp-action="" asp-route-id="@item.Id">Details</a>
+                <a asp-controller="Person" asp-action="ById" asp-route-id="@item.Id">Details</a>
             </td>
         </tr>
     }
