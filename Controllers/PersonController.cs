@@ -31,4 +31,26 @@ public class PersonController : Controller
             return NotFound(new NotFoundObjectResult("The person with given ID was not found."));
         return View(person);
     }
+
+    [HttpGet]
+    [Route("search")]
+    public IActionResult Search()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [Route("search")]
+    public IActionResult Search(string firstName, string country)
+    {
+        if (ModelState.IsValid)
+        {
+            var result = new Personal_info(_configuration).GetPersons(firstName, null, null, country);
+            if (result.Count == 0) return View(new Tuple<Person, bool, bool>(null, true, false));
+            var id = result[0].Id;
+            return RedirectToAction("ById", new { id = id });
+        }
+
+        return View(new Tuple<Person, bool, bool>(null, false, true));
+    }
 }

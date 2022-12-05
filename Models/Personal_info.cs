@@ -14,7 +14,7 @@ public class Personal_info
     public List<Person> GetAllPerson()
     {
         var list = new List<Person>();
-        
+
         using (var connection = new SQLiteConnection(_configuration.GetConnectionString("SQLite")))
         {
             connection.Open();
@@ -45,5 +45,33 @@ public class Personal_info
     {
         var persons = GetAllPerson();
         return persons.Find((person) => person.Id == id);
+    }
+
+    delegate bool Validator(string x);
+
+    public List<Person> GetPersons(string firstName, string lastName, string email, string country)
+    {
+        var persons = GetAllPerson();
+        return persons.FindAll(person =>
+            {
+                Validator firstNameValidator = firstName != null
+                    ? (firstName) => firstName == person.FirstName
+                    : (x) => true;
+                Validator lastNameValidator = lastName != null
+                    ? (lastName) => lastName == person.LastName
+                    : (x) => true;
+                Validator emailValidator = lastName != null
+                    ? (email) => email == person.Email
+                    : (x) => true;
+                Validator countryValidator = lastName != null
+                    ? (country) => country == person.Country
+                    : (x) => true;
+
+                return firstNameValidator(firstName) &&
+                       lastNameValidator(lastName) &&
+                       emailValidator(email) &&
+                       countryValidator(country);
+            }
+        );
     }
 }
